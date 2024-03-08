@@ -60,7 +60,7 @@ class MarsViewModel : ViewModel() {
             marsUiState = MarsUiState.Loading
             marsUiState = try {
                 val listResult = MarsApi.retrofitService.getPhotos()
-                val imgUrls = listResult.map { it.download_url }
+                val imgUrls = listResult.map { it.downloadURL }
 
                 // Använder MarsUiState.Success för att skicka vidare listan av bild-URL:er
                 MarsUiState.Success(imgUrls) // Antag att Success kan hantera en lista av strängar eller anpassa enligt ditt behov
