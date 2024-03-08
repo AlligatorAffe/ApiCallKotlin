@@ -17,6 +17,7 @@
 package com.example.marsphotos.network
 
 import com.example.marsphotos.model.MarsPhoto
+import com.example.marsphotos.model.RandomPhotos
 import com.example.marsphotos.model.RandomPhotosItem
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -25,7 +26,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 
     private const val BASE_URL =
-        "https://android-kotlin-fun-mars-server.appspot.com"
+        "https://picsum.photos/"
     
     //private const val BASE_URL = "https://picsum.photos/v2/list"
     /**
@@ -48,8 +49,8 @@ import retrofit2.http.GET
      * Retrofit service object for creating api calls
      */
     interface MarsApiService {
-        @GET("photos")
-        suspend fun getPhotos(): List<MarsPhoto>
+        @GET("v2/list")
+        suspend fun getPhotos(): ArrayList<RandomPhotosItem>
         //@GET("photos/v2/list")
         //suspend fun getPhotos(): List<RandomPhotosItem>
     }
