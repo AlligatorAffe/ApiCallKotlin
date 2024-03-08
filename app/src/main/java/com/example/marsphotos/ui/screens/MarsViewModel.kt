@@ -20,9 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.compose.AsyncImage
 import com.example.marsphotos.model.MarsPhoto
-import com.example.marsphotos.model.RandomPhotosItem
 import com.example.marsphotos.network.MarsApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -60,7 +58,7 @@ class MarsViewModel : ViewModel() {
             marsUiState = MarsUiState.Loading
             marsUiState = try {
                 val listResult = MarsApi.retrofitService.getPhotos()
-                val imgUrls = listResult.map { it.imgSrc }
+                val imgUrls = listResult.map { it.downloadURL }
 
                 // Använder MarsUiState.Success för att skicka vidare listan av bild-URL:er
                 MarsUiState.Success(imgUrls) // Antag att Success kan hantera en lista av strängar eller anpassa enligt ditt behov
