@@ -40,10 +40,7 @@ import com.example.marsphotos.ui.screens.MarsViewModel
 
 @Composable
 fun MarsPhotosApp() {
-    //val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        //modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        //topBar = { MarsTopAppBar(scrollBehavior = scrollBehavior) }
     ) {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -58,21 +55,3 @@ fun MarsPhotosApp() {
     }
 }
 
-/*
-@Composable
-fun MarsTopAppBar(scrollBehavior: TopAppBarScrollBehavior, modifier: Modifier = Modifier) {
-    CenterAlignedTopAppBar(
-        scrollBehavior = scrollBehavior,
-        title = {
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineSmall,
-
-            )
-        },
-        modifier = modifier
-    )
-}
-
-
- */
