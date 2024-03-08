@@ -20,17 +20,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.marsphotos.R
 import com.example.marsphotos.model.MarsPhoto
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
@@ -91,39 +100,38 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
  */
 @Composable
 fun ResultScreen(photos: List<String>, modifier: Modifier = Modifier) {
-    // En enkel lista som visar bilderna.
-    // Du kan anpassa layouten efter dina behov.
-    LazyColumn(modifier = modifier) {
+    //Denna funkade lite halvt
+    val columns = 2
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(columns),
+        modifier = modifier
+    ) {
         items(photos) { photoUrl ->
             ImageComposable(imageUrl = photoUrl)
-            Text(text = "hey")
-            Text(text = "${photoUrl}")
+
         }
     }
+
 }
 
 @Composable
 fun ImageComposable(imageUrl: String) {
-    // Använd ett bibliotek som Coil för att ladda och visa bilderna från URL:erna
-    // Exempelvis:
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = "Mars Photo",
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
 
-    /* OLD IMAGE VISARE
-    Image(
-
-        painter = rememberAsyncImagePainter(imageUrl),
-        contentDescription = "Mars PhotoS",
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
-    */
+            .size(150.dp)
+            .padding(4.dp) // Lägg till mellanrum mellan grid cellerna.
+            .clip(RoundedCornerShape(15.dp)) // Använd clip här för att runda hörnen.
+    ) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = "Mars Photo",
+            modifier = Modifier.fillMaxSize(), // Fyll boxen med bilden.
+            contentScale = ContentScale.Crop // Behåll bildens aspect ratio när den fyller utrymmet.
+        )
+    }
+
+
 }
 
 
@@ -145,28 +153,6 @@ fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
  */
 
 
-/*
-@Composable
-fun ResultScreen(photoUrl: String, modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-    ) {
-        val image: Painter = rememberImagePainter(
-            data = photoUrl,
-            builder = {
-                crossfade(true) // Optional, adds a fade-in transition when the image loads
-            }
-        )
-        Image(
-            painter = image,
-            contentDescription = "Photo",
-            modifier = Modifier.size(200.dp) // Just an example size, you can adjust as needed
-        )
-    }
-}
-
- */
 
 
 

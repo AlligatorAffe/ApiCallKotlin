@@ -63,16 +63,8 @@ class MarsViewModel : ViewModel() {
                 val imgUrls = listResult.map { it.imgSrc }
 
                 // Använder MarsUiState.Success för att skicka vidare listan av bild-URL:er
-                MarsUiState.Success(imgUrls) // Antag att Success kan hantera en lista av strängar eller anpassa enligt ditt behov
-
-
-                /*
-               MarsUiState.Success(
-
-                    "Success: ${listResult.size} Mars jfwoefjnoewfnwoefnweof retrieved"
-                )
-
-                 */
+                MarsUiState.Success(imgUrls)
+                
             } catch (e: IOException) {
                 MarsUiState.Error
             } catch (e: HttpException) {
