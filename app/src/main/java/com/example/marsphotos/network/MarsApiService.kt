@@ -16,8 +16,6 @@
 
 package com.example.marsphotos.network
 
-import com.example.marsphotos.model.MarsPhoto
-import com.example.marsphotos.model.RandomPhotos
 import com.example.marsphotos.model.RandomPhotosItem
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -25,7 +23,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.http.GET
 
-    private const val BASE_URL =
+private const val BASE_URL =
         "https://picsum.photos/"
     
     //private const val BASE_URL = "https://picsum.photos/v2/list"
