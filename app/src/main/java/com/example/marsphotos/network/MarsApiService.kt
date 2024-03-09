@@ -49,8 +49,6 @@ private const val BASE_URL =
     interface MarsApiService {
         @GET("v2/list")
         suspend fun getPhotos(): ArrayList<RandomPhotosItem>
-        //@GET("photos/v2/list")
-        //suspend fun getPhotos(): List<RandomPhotosItem>
     }
 
     /**

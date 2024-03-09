@@ -100,12 +100,14 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
  */
 @Composable
 fun ResultScreen(photos: List<String>, modifier: Modifier = Modifier) {
+
     //Denna funkade lite halvt
     val columns = 2
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
         modifier = modifier
     ) {
+
         items(photos) { photoUrl ->
             ImageComposable(imageUrl = photoUrl)
 

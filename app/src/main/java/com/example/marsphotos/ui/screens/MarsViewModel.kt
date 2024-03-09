@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marsphotos.model.MarsPhoto
 import com.example.marsphotos.network.MarsApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -42,22 +43,19 @@ class MarsViewModel : ViewModel() {
     var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
         private set
 
-    /**
-     * Call getMarsPhotos() on init so we can display status immediately.
-     */
+
+     //  getMarsPhotos() on init so we can display status immediately.
+
     init {
         getMarsPhotos()
     }
 
-    /**
-     * Gets Mars photos information from the Mars API Retrofit service and updates the
-     * [MarsPhoto] [List] [MutableList].
-     */
     fun getMarsPhotos() {
         viewModelScope.launch {
             marsUiState = MarsUiState.Loading
             marsUiState = try {
-                val listResult = MarsApi.retrofitService.getPhotos()
+                //val listResult = MarsApi.retrofitService.getPhotos()
+                val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
 
                 // Använder MarsUiState.Success för att skicka vidare listan av bild-URL:er
