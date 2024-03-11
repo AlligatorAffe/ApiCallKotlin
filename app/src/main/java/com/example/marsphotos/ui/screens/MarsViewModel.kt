@@ -38,6 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
@@ -85,6 +86,29 @@ class MarsViewModel : ViewModel() {
         }
     }
 
+    fun fetchImages() = runBlocking {
+        try {
+            val results = mutableListOf<ResultType>() // Replace ResultType with your actual type
+            coroutineScope {
+                val tasks = java.util.List(10) { index -> // Launch 10 tasks as an example
+                    async {
+                        // Your asynchronous task here. For example: här trycker vi in bilderna.
+                        performTask(index)
+                    }
+                }
+                tasks.forEach {
+                    results.add(it.await()) // Collect results, awaiting each task's completion
+                }
+            }
+            // Use results here
+        } catch (e: Exception) {
+            // Handle any exceptions thrown by tasks
+        }
+    }
+
+    suspend fun performTask(index: Int): ResultType {
+        // Implement your task here downloada images here?!
+    }
 
 
 }
