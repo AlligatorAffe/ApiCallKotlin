@@ -15,6 +15,8 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.content.Context
+import android.provider.Contacts.Photos
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,8 +33,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,10 +49,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.example.marsphotos.R
+import com.example.marsphotos.helper.ImagePreLoader
 import com.example.marsphotos.model.MarsPhoto
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
 
@@ -58,7 +65,7 @@ fun HomeScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     when (marsUiState) {
-        is MarsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+        is MarsUiState.Loading -> LoadingScreen()
         is MarsUiState.Success -> ResultScreen(
             marsUiState.photos, modifier = modifier.fillMaxWidth()
         )
@@ -70,12 +77,8 @@ fun HomeScreen(
  * The home screen displaying the loading message.
  */
 @Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.loading_img),
-        contentDescription = stringResource(R.string.loading)
-    )
+fun LoadingScreen() {
+    CircularProgressIndicator()
 }
 
 /**
@@ -100,22 +103,55 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
  */
 @Composable
 fun ResultScreen(photos: List<String>, modifier: Modifier = Modifier) {
-
-    //Denna funkade lite halvt
     val columns = 2
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(columns),
-        modifier = modifier
-    ) {
+    val painter = rememberAsyncImagePainter(model = photos)
 
-        items(photos) { photoUrl ->
-            ImageComposable(imageUrl = photoUrl)
+    if(painter.length() == 0){
+        CircularProgressIndicator()
+    }else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(columns),
+            modifier = modifier
+        ) {
 
+            items(photos) { photoUrl ->
+                ImageComposable(imageUrl = photoUrl)
+
+            }
         }
     }
-
 }
 
+@Composable
+fun ImageComposable(imageUrl: String) {
+    Box(
+        modifier = Modifier
+            .size(150.dp)
+            .padding(4.dp) // Lägg till mellanrum mellan grid cellerna.
+            .clip(RoundedCornerShape(15.dp)) // Använd clip här för att runda hörnen.
+    ) {
+        /*AsyncImage(
+            model = imageUrl,
+            contentDescription = "Mars Photo",
+            modifier = Modifier.fillMaxSize(), // Fyll boxen med bilden.
+            contentScale = ContentScale.Crop // Behåll bildens aspect ratio när den fyller utrymmet.
+        )
+
+         */
+        SubcomposeAsyncImage(
+            model = imageUrl,
+            loading = {
+                CircularProgressIndicator()
+            },
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            contentDescription = "randomPhotos"
+        )
+    }
+}
+
+
+/*
 @Composable
 fun ImageComposable(imageUrl: String) {
 
@@ -135,6 +171,8 @@ fun ImageComposable(imageUrl: String) {
 
 
 }
+
+ */
 
 
 

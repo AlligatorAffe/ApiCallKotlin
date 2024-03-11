@@ -15,15 +15,30 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.app.Application
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.Coil
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.marsphotos.helper.ImagePreLoader
 import com.example.marsphotos.model.MarsPhoto
 import com.example.marsphotos.network.MarsApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -42,6 +57,7 @@ class MarsViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
     var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
         private set
+    var photos: MutableState<List<Bitmap>> = mutableStateOf(emptyList())
 
 
      //  getMarsPhotos() on init so we can display status immediately.
@@ -58,7 +74,7 @@ class MarsViewModel : ViewModel() {
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
 
-                // Använder MarsUiState.Success för att skicka vidare listan av bild-URL:er
+                //async { preloadImages(context = Context,imgUrls ) }.await()
                 MarsUiState.Success(imgUrls)
                 
             } catch (e: IOException) {
@@ -68,4 +84,7 @@ class MarsViewModel : ViewModel() {
             }
         }
     }
+
+
+
 }

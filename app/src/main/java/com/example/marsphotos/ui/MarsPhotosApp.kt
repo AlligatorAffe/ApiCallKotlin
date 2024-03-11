@@ -4,6 +4,7 @@
 
 package com.example.marsphotos.ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marsphotos.R
+import com.example.marsphotos.helper.ImagePreLoader
 import com.example.marsphotos.ui.screens.HomeScreen
 import com.example.marsphotos.ui.screens.MarsViewModel
 
