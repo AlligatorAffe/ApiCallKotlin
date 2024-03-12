@@ -15,30 +15,19 @@
  */
 package com.example.marsphotos.ui.screens
 
-import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
-import androidx.compose.runtime.Composable
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.Coil
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.example.marsphotos.helper.ImagePreLoader
-import com.example.marsphotos.model.MarsPhoto
 import com.example.marsphotos.network.MarsApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -73,9 +62,16 @@ class MarsViewModel : ViewModel() {
                 //val listResult = MarsApi.retrofitService.getPhotos()
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
-
-                //async { preloadImages(context = Context,imgUrls ) }.await()
-                MarsUiState.Success(imgUrls)
+                Log.d("TAG", "Inne i denna röv funktionen!");
+                //val image =  MarsApi.retroFitServ.downloadImages("https://picsum.photos/id/0/5000/3333")
+                Log.d("TAG", "efter röv funktionen!");
+                //Log.d("TAG","detta är i image ${image.string()}")
+                val imageResponseBody = async {  fetchImages(imgUrls)}.await()
+                Log.d("TAG", "DETTA ÄR VAD FETCH IMAGES RETURNS!!!!!!!!!!${imageResponseBody}")
+                // KALLA PÅ DENNA ASYNCRONT OCH VÄNTA PÅ DEN
+                //SEDAN SKICKAS BILDERNA VIDARE TILL SUCCESS!
+                //MarsUiState.Success(imgUrls)
+                MarsUiState.Success(imageResponseBody)
                 
             } catch (e: IOException) {
                 MarsUiState.Error
@@ -84,6 +80,44 @@ class MarsViewModel : ViewModel() {
             }
         }
     }
+
+
+
+    fun fetchImages(urls: List<String>) = runBlocking {
+        try {
+            val results = mutableListOf<ByteArray>()
+            coroutineScope {
+                var i =0
+                val tasks = List(urls.size) { index -> // Drar igång hela url listans
+                    async {
+                        i++
+
+                        performTask(urls[index], i)
+
+                    }
+                }
+
+                tasks.forEach {
+                    results.add(it.await()) // Collect results, awaiting each task's completion
+                }
+                val röv = results
+                Log.d("TAG","Detta kommer ut ur röven ${röv[1]}")
+            }
+            // Use results here
+            return@runBlocking results
+        } catch (e: Exception) {
+            // Handle any exceptions thrown by tasks
+        }
+    }
+
+    suspend fun performTask(myUrls: String, i : Int): ByteArray {
+        Log.d("TAG", "Detta går in i responsen ${myUrls} och det är denna gången ${i}")
+        val response = MarsApi.retroFitServ.downloadImages(myUrls)
+
+        return response.bytes()
+
+    }
+
 
 
 

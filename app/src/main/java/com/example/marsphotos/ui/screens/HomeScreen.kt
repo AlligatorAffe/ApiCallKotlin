@@ -101,25 +101,20 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 /**
  * ResultScreen displaying number of photos retrieved.
  */
+
 @Composable
 fun ResultScreen(photos: List<String>, modifier: Modifier = Modifier) {
     val columns = 2
-    val painter = rememberAsyncImagePainter(model = photos)
-
-    if(painter.length() == 0){
-        CircularProgressIndicator()
-    }else {
+    //val painter = rememberAsyncImagePainter(model = photos)
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
             modifier = modifier
         ) {
-
             items(photos) { photoUrl ->
                 ImageComposable(imageUrl = photoUrl)
 
             }
         }
-    }
 }
 
 @Composable
@@ -130,14 +125,6 @@ fun ImageComposable(imageUrl: String) {
             .padding(4.dp) // Lägg till mellanrum mellan grid cellerna.
             .clip(RoundedCornerShape(15.dp)) // Använd clip här för att runda hörnen.
     ) {
-        /*AsyncImage(
-            model = imageUrl,
-            contentDescription = "Mars Photo",
-            modifier = Modifier.fillMaxSize(), // Fyll boxen med bilden.
-            contentScale = ContentScale.Crop // Behåll bildens aspect ratio när den fyller utrymmet.
-        )
-
-         */
         SubcomposeAsyncImage(
             model = imageUrl,
             loading = {
@@ -149,51 +136,6 @@ fun ImageComposable(imageUrl: String) {
         )
     }
 }
-
-
-/*
-@Composable
-fun ImageComposable(imageUrl: String) {
-
-    Box(
-        modifier = Modifier
-            .size(150.dp)
-            .padding(4.dp) // Lägg till mellanrum mellan grid cellerna.
-            .clip(RoundedCornerShape(15.dp)) // Använd clip här för att runda hörnen.
-    ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "Mars Photo",
-            modifier = Modifier.fillMaxSize(), // Fyll boxen med bilden.
-            contentScale = ContentScale.Crop // Behåll bildens aspect ratio när den fyller utrymmet.
-        )
-    }
-
-
-}
-
- */
-
-
-
-
-/*   //ORG KOD
-@Composable
-fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-    ) {
-        Text(text = photos)
-    }
-}
-
-
-
- */
-
-
-
 
 
 @Preview(showBackground = true)
