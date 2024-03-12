@@ -101,10 +101,11 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 /**
  * ResultScreen displaying number of photos retrieved.
  */
+
 @Composable
 fun ResultScreen(photos: List<String>, modifier: Modifier = Modifier) {
     val columns = 2
-    val painter = rememberAsyncImagePainter(model = photos)
+    //val painter = rememberAsyncImagePainter(model = photos)
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
             modifier = modifier
