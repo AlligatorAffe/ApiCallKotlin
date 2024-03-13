@@ -50,11 +50,6 @@ class MarsViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
     var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
         private set
-    var photos: MutableState<List<Bitmap>> = mutableStateOf(emptyList())
-
-
-     //  getMarsPhotos() on init so we can display status immediately.
-
     init {
         getMarsPhotos()
     }
@@ -66,17 +61,9 @@ class MarsViewModel : ViewModel() {
                 //val listResult = MarsApi.retrofitService.getPhotos()
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
-                Log.d("TAG", "Inne i denna röv funktionen!");
-                //val image =  MarsApi.retroFitServ.downloadImages("https://picsum.photos/id/0/5000/3333")
-                Log.d("TAG", "efter röv funktionen!");
-                //Log.d("TAG","detta är i image ${image.string()}")
-
-                val imageResponseBody = async {  fetchImages(imgUrls) }.await()
-                //val finished = convertImageByteArrayToBitmap(imageResponseBody)
+                val imageResponseBody =  fetchImages(imgUrls)
                 Log.d("TAG", "DETTA ÄR VAD FETCH IMAGES RETURNS!!!!!!!!!!${imageResponseBody}")
-                // KALLA PÅ DENNA ASYNCRONT OCH VÄNTA PÅ DEN
-                //SEDAN SKICKAS BILDERNA VIDARE TILL SUCCESS!
-                //MarsUiState.Success(imgUrls)
+
                 MarsUiState.Success(imageResponseBody)
                 
             } catch (e: IOException) {
@@ -89,46 +76,40 @@ class MarsViewModel : ViewModel() {
 
 
 
-    fun fetchImages(urls: List<String>) = runBlocking {
+    suspend fun fetchImages(urls: List<String>): MutableList<Bitmap> {
+        val results = mutableListOf<Bitmap>()
         try {
-            val results = mutableListOf<Bitmap>()
             coroutineScope {
-                var i =0
                 val tasks = List(urls.size) { index -> // Drar igång hela url listans
                     async(Dispatchers.IO) {
-                        //i++
-
                         performTask(urls[index])
-
                     }
                 }
 
                 tasks.forEach {
-                    //results.add(it.await()) // Collect results, awaiting each task's completion
-                    val inputStream = it.await() // Väntar på att InputStream ska bli tillgänglig
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    inputStream.close() // Stäng InputStream efter användning för att undvika minnesläckor
+                    val inputStream = it.await()
+                    //val bitmap = BitmapFactory.decodeStream(inputStream)
+                    val bitmap = decodeStream(inputStream)
+                    inputStream.close()
                     if (bitmap != null) {
-                        results.add(bitmap) // Lägg till den dekoderade Bitmap i results-listan
+                        results.add(bitmap)
                     }
                 }
                 val röv = results
                 Log.d("TAG","Detta kommer ut ur röven ${röv[1]}")
             }
             // Use results here
-            return@runBlocking results
+            return results
+
         } catch (e: Exception) {
-            // Handle any exceptions thrown by tasks
+
         }
+    return results
     }
 
     suspend fun performTask(myUrls: String): InputStream {
-        Log.d("TAG", "Detta går in i responsen ${myUrls} och det är denna gången ")
         val response = MarsApi.retroFitServ.downloadImages(myUrls)
-        //val remadeItems = convertImageByteArrayToBitMap(response.bytes())
-
-        return response.byteStream() //remadeItems
-
+        return response.byteStream()
     }
 
     /*

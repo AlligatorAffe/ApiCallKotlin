@@ -92,7 +92,6 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 @Composable
 fun ResultScreen(photos: List<Bitmap>, modifier: Modifier = Modifier) {
     val columns = 2
-    //val painter = rememberAsyncImagePainter(model = photos)
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
             modifier = modifier
@@ -100,15 +99,6 @@ fun ResultScreen(photos: List<Bitmap>, modifier: Modifier = Modifier) {
             items(photos){ it ->
                 Image(bitmap = it.asImageBitmap(), contentDescription ="HEJ" )
             }
-
-
-            /*
-            items(photos) { photoUrl ->
-                ImageComposable(imageUrl = photoUrl)
-
-            }
-
-             */
         }
 }
 
