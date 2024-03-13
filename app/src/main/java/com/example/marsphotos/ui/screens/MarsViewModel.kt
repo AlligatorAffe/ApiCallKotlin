@@ -16,6 +16,8 @@
 package com.example.marsphotos.ui.screens
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.BitmapFactory.*
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -24,19 +26,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marsphotos.network.MarsApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
+import java.io.InputStream
 
 /**
  * UI state for the Home screen
  */
 sealed interface MarsUiState {
     //data class Success(val photos: String) : MarsUiState
-    data class Success(val photos: List<String>) : MarsUiState
+    data class Success(val photos: List<Bitmap>) : MarsUiState
 
     object Error : MarsUiState
     object Loading : MarsUiState
@@ -66,7 +70,9 @@ class MarsViewModel : ViewModel() {
                 //val image =  MarsApi.retroFitServ.downloadImages("https://picsum.photos/id/0/5000/3333")
                 Log.d("TAG", "efter röv funktionen!");
                 //Log.d("TAG","detta är i image ${image.string()}")
-                val imageResponseBody = async {  fetchImages(imgUrls)}.await()
+
+                val imageResponseBody = async {  fetchImages(imgUrls) }.await()
+                //val finished = convertImageByteArrayToBitmap(imageResponseBody)
                 Log.d("TAG", "DETTA ÄR VAD FETCH IMAGES RETURNS!!!!!!!!!!${imageResponseBody}")
                 // KALLA PÅ DENNA ASYNCRONT OCH VÄNTA PÅ DEN
                 //SEDAN SKICKAS BILDERNA VIDARE TILL SUCCESS!
@@ -85,20 +91,26 @@ class MarsViewModel : ViewModel() {
 
     fun fetchImages(urls: List<String>) = runBlocking {
         try {
-            val results = mutableListOf<ByteArray>()
+            val results = mutableListOf<Bitmap>()
             coroutineScope {
                 var i =0
                 val tasks = List(urls.size) { index -> // Drar igång hela url listans
-                    async {
-                        i++
+                    async(Dispatchers.IO) {
+                        //i++
 
-                        performTask(urls[index], i)
+                        performTask(urls[index])
 
                     }
                 }
 
                 tasks.forEach {
-                    results.add(it.await()) // Collect results, awaiting each task's completion
+                    //results.add(it.await()) // Collect results, awaiting each task's completion
+                    val inputStream = it.await() // Väntar på att InputStream ska bli tillgänglig
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    inputStream.close() // Stäng InputStream efter användning för att undvika minnesläckor
+                    if (bitmap != null) {
+                        results.add(bitmap) // Lägg till den dekoderade Bitmap i results-listan
+                    }
                 }
                 val röv = results
                 Log.d("TAG","Detta kommer ut ur röven ${röv[1]}")
@@ -110,13 +122,36 @@ class MarsViewModel : ViewModel() {
         }
     }
 
-    suspend fun performTask(myUrls: String, i : Int): ByteArray {
-        Log.d("TAG", "Detta går in i responsen ${myUrls} och det är denna gången ${i}")
+    suspend fun performTask(myUrls: String): InputStream {
+        Log.d("TAG", "Detta går in i responsen ${myUrls} och det är denna gången ")
         val response = MarsApi.retroFitServ.downloadImages(myUrls)
+        //val remadeItems = convertImageByteArrayToBitMap(response.bytes())
 
-        return response.bytes()
+        return response.byteStream() //remadeItems
 
     }
+
+    /*
+    suspend fun performTask(myUrls: String): ByteArray {
+        Log.d("TAG", "Detta går in i responsen ${myUrls} och det är denna gången ")
+        val response = MarsApi.retroFitServ.downloadImages(myUrls)
+        //val remadeItems = convertImageByteArrayToBitMap(response.bytes())
+
+        return response.bytes() //remadeItems
+
+    }
+
+     */
+    /*
+    fun convertImageByteArrayToBitMap(imageData: ByteArray) : List<Bitmap> {
+        var results = mutableListOf<Bitmap>()
+        for(image: Int in imageData){
+            results = decodeByteArray(image as ByteArray, 0 , image.size)
+        }
+        return results
+    }
+
+     */
 
 
 
