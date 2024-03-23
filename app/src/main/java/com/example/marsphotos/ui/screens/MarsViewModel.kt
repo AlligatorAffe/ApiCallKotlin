@@ -109,6 +109,7 @@ class MarsViewModel : ViewModel() {
 
     suspend fun performTask(myUrls: String): InputStream {
         val response = MarsApi.retroFitServ.downloadImages(myUrls)
+
         return response.byteStream()
     }
 
