@@ -13,39 +13,26 @@ import retrofit2.http.Url
 private const val BASE_URL =
     "https://picsum.photos/"
 
-//private const val BASE_URL = "https://picsum.photos/v2/list"
-/**
- * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
- */
+
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(BASE_URL)
     .build()
 
-/**
- * Retrofit service object for creating api calls
- */
-interface MarsApiService {
+
+interface ApiService {
     @GET("v2/list")
     suspend fun getPhotos(): ArrayList<RandomPhotosItem>
 
-    //suspend fun downloadImages(downloadable_url: List<String>) : ResponseBody
-}
-
-/**
- * A public Api object that exposes the lazy-initialized Retrofit service
- */
-object MarsApi {
-    val retrofitService: MarsApiService by lazy {
-        retrofit.create(MarsApiService::class.java)
-    }
-    val retroFitServ: DownloadPhotosApiService by lazy {
-        retrofit.create(DownloadPhotosApiService::class.java)
-    }
-}
-
-public interface DownloadPhotosApiService{
-    @GET("")
     suspend fun downloadImages(@Url myUrls: String) : ResponseBody
 }
+
+
+object PhotoApi {
+    val retrofitService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+
+}
+
 

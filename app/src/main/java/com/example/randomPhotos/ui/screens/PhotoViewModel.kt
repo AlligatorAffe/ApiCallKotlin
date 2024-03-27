@@ -25,7 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.randomPhotos.network.MarsApi
+import com.example.randomPhotos.network.PhotoApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -61,7 +61,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             photoUiState = PhotoUiState.Loading
             photoUiState = try {
-                val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
+                val listResult = async { PhotoApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
                 async{ fetchImages(imgUrls) }.await()
                 PhotoUiState.Success
@@ -133,7 +133,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun performTask(myUrls: String): Bitmap {
-        val response = MarsApi.retroFitServ.downloadImages(myUrls)
+        val response = PhotoApi.retrofitService.downloadImages(myUrls)
 
         val byteArray = response.bytes()
         val options = BitmapFactory.Options().apply {
