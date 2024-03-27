@@ -45,14 +45,14 @@ import java.io.File
 
 @Composable
 fun HomeScreen(
-    marsUiState: MarsUiState,
+    photoUiState: MarsUiState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    when (marsUiState) {
+    when (photoUiState) {
         is MarsUiState.Loading -> LoadingScreen()
         is MarsUiState.Success -> ResultScreen(
-            marsUiState.photos, modifier = modifier.fillMaxWidth()
+            photoUiState.photos, modifier = modifier.fillMaxWidth()
         )
         is MarsUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
     }

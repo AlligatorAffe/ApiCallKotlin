@@ -19,17 +19,12 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marsphotos.network.MarsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -40,9 +35,6 @@ import retrofit2.HttpException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 
 sealed interface MarsUiState {
@@ -56,10 +48,10 @@ sealed interface MarsUiState {
 
 
 
-class MarsViewModel(application: Application) : AndroidViewModel(application) {
+class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     private val context = application.applicationContext
 
-    var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
+    var photoUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
         private set
     init {
         getMarsPhotos()
@@ -67,8 +59,8 @@ class MarsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getMarsPhotos() {
         viewModelScope.launch {
-            marsUiState = MarsUiState.Loading
-            marsUiState = try {
+            photoUiState = MarsUiState.Loading
+            photoUiState = try {
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
                 val imageResponseBody = async{ fetchImages(imgUrls) }.await()
