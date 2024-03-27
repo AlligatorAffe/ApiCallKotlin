@@ -40,7 +40,7 @@ import java.io.InputStream
  */
 sealed interface MarsUiState {
     //data class Success(val photos: String) : MarsUiState
-    data class Success(val photos: List<Bitmap>) : MarsUiState
+    data class Success(val photos: MutableList<ByteArray>) : MarsUiState
 
     object Error : MarsUiState
     object Loading : MarsUiState
@@ -61,11 +61,11 @@ class MarsViewModel : ViewModel() {
                 //val listResult = MarsApi.retrofitService.getPhotos()
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
-                val imageResponseBody =  fetchImages(imgUrls)
+                val imageResponseBody = async{ fetchImages(imgUrls) }.await()
                 Log.d("TAG", "DETTA ÄR VAD FETCH IMAGES RETURNS!!!!!!!!!!${imageResponseBody}")
 
                 MarsUiState.Success(imageResponseBody)
-                
+
             } catch (e: IOException) {
                 MarsUiState.Error
             } catch (e: HttpException) {
@@ -76,8 +76,8 @@ class MarsViewModel : ViewModel() {
 
 
 
-    suspend fun fetchImages(urls: List<String>): MutableList<Bitmap> {
-        val results = mutableListOf<Bitmap>()
+    suspend fun fetchImages(urls: List<String>): MutableList<ByteArray> {
+        val results = mutableListOf<ByteArray>()
         try {
             coroutineScope {
                 val tasks = List(urls.size) { index -> // Drar igång hela url listans
@@ -87,13 +87,14 @@ class MarsViewModel : ViewModel() {
                 }
 
                 tasks.forEach {
-                    val inputStream = it.await()
+                    val bilder = it.await()
                     //val bitmap = BitmapFactory.decodeStream(inputStream)
-                    val bitmap = decodeStream(inputStream)
-                    inputStream.close()
-                    if (bitmap != null) {
-                        results.add(bitmap)
-                    }
+                    //val bitmap = decodeStream(inputStream)
+                    //inputStream.close()
+                    //if (bitmap != null) {
+                    //       results.add(bitmap)
+                    //  }
+                    results.add(bilder)
                 }
                 val röv = results
                 Log.d("TAG","Detta kommer ut ur röven ${röv[1]}")
@@ -104,13 +105,13 @@ class MarsViewModel : ViewModel() {
         } catch (e: Exception) {
 
         }
-    return results
+        return results
     }
 
-    suspend fun performTask(myUrls: String): InputStream {
+    suspend fun performTask(myUrls: String): ByteArray {
         val response = MarsApi.retroFitServ.downloadImages(myUrls)
 
-        return response.byteStream()
+        return response.bytes()
     }
 
     /*
@@ -139,3 +140,7 @@ class MarsViewModel : ViewModel() {
 
 
 }
+
+
+
+

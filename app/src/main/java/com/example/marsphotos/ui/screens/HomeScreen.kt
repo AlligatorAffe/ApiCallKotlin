@@ -16,6 +16,7 @@
 package com.example.marsphotos.ui.screens
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.marsphotos.R
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
+import java.lang.System.out
 
 @Composable
 fun HomeScreen(
@@ -78,10 +80,7 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
-        )
-        Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
+        Text(text = "Failed to load", modifier = Modifier.padding(16.dp))
     }
 }
 
@@ -90,16 +89,29 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
  */
 
 @Composable
-fun ResultScreen(photos: List<Bitmap>, modifier: Modifier = Modifier) {
+fun ResultScreen(photos: MutableList<ByteArray>, modifier: Modifier = Modifier) {
     val columns = 2
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(columns),
-            modifier = modifier
-        ) {
-            items(photos){ it ->
-                Image(bitmap = it.asImageBitmap(), contentDescription ="HEJ" )
-            }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(columns),
+        modifier = modifier
+    ) {
+
+        items(photos){
+            Text(text = " ${it}")
+            //val bild = convertImageByteArrayToBitmap(it)
+            //val bilder = BitmapFactory.decodeByteArray(it, 0, it.size)
+            /*
+            Image(
+                bitmap = bild.asImageBitmap(),
+                contentDescription = "some useful description",
+            )
+             */
+
         }
+        //items(photos){ it ->
+        //Image(bitmap = it.asImageBitmap(), contentDescription ="HEJ" )
+        //}
+    }
 }
 
 @Composable
@@ -139,3 +151,14 @@ fun ErrorScreenPreview() {
     }
 }
 
+
+/*
+fun convertImageByteArrayToBitmap(imageData: ByteArray): Bitmap {
+    val bildeen = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+    //ByteArrayOutputStream out = new ByteArrayOutputStream();
+    bildeen.compress(Bitmap.CompressFormat.PNG, 20, out);
+
+    return bildeen
+}
+
+ */
