@@ -20,9 +20,7 @@ import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -37,28 +35,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import com.example.randomPhotos.ui.theme.MarsPhotosTheme
 import java.io.File
 
 @Composable
 fun HomeScreen(
-    photoUiState: MarsUiState,
+    photoUiState: PhotoUiState,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-) {
+
+    ) {
     when (photoUiState) {
-        is MarsUiState.Loading -> LoadingScreen()
-        is MarsUiState.Success -> ResultScreen(modifier = modifier.fillMaxSize())
-        is MarsUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
+        is PhotoUiState.Loading -> LoadingScreen()
+        is PhotoUiState.Success -> ResultScreen(modifier = modifier.fillMaxSize())
+        is PhotoUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
     }
 }
 
 @Composable
 fun LoadingScreen() {
     CircularProgressIndicator()
+
 }
 
 
@@ -90,9 +87,8 @@ fun ResultScreen(modifier: Modifier = Modifier) {
                 ImageComposable(bild = bitmap)
             }
         }
-
-        }
     }
+}
 
 
 
@@ -115,23 +111,6 @@ fun ImageComposable(bild: Bitmap) {
             contentScale = ContentScale.Crop,
             contentDescription = "randomPhotos"
         )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun LoadingScreenPreview() {
-    MarsPhotosTheme {
-        LoadingScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ErrorScreenPreview() {
-    MarsPhotosTheme {
-        ErrorScreen()
     }
 }
 

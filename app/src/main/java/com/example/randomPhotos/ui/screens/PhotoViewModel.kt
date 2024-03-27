@@ -37,12 +37,12 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 
-sealed interface MarsUiState {
+sealed interface PhotoUiState {
 
-    object Success: MarsUiState
+    object Success: PhotoUiState
 
-    object Error : MarsUiState
-    object Loading : MarsUiState
+    object Error : PhotoUiState
+    object Loading : PhotoUiState
 }
 
 
@@ -51,7 +51,7 @@ sealed interface MarsUiState {
 class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     private val context = application.applicationContext
 
-    var photoUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
+    var photoUiState: PhotoUiState by mutableStateOf(PhotoUiState.Loading)
         private set
     init {
         getMarsPhotos()
@@ -59,17 +59,17 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getMarsPhotos() {
         viewModelScope.launch {
-            photoUiState = MarsUiState.Loading
+            photoUiState = PhotoUiState.Loading
             photoUiState = try {
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
                 async{ fetchImages(imgUrls) }.await()
-                MarsUiState.Success
+                PhotoUiState.Success
 
             } catch (e: IOException) {
-                MarsUiState.Error
+                PhotoUiState.Error
             } catch (e: HttpException) {
-                MarsUiState.Error
+                PhotoUiState.Error
             }
         }
     }
@@ -87,18 +87,13 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
                 tasks.forEach {
-
-                    val bilder = it.await()
                     saveImageToInternalStorage(context,it.await(), i)
-                    results.add(bilder)
                     i++;
 
                 }
-                val röv = results
-                Log.d("BILDER","Detta kommer ut ur röven ${röv[1]}")
             }
         } catch (e: Exception) {
-
+            PhotoUiState.Error
         }
         return results
     }
@@ -132,6 +127,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             )
         } catch (e: IOException) {
             e.printStackTrace()
+            PhotoUiState.Error
             Log.e("BILDER", "Misslyckades med att spara bilden till den interna lagringen")
         }
     }
@@ -169,66 +165,3 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
         return inSampleSize
     }
 }
-
-
-/*
-    fun saveImageToInternalStorage(context: Context, bild: Bitmap) {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val folderName = "MyImages" // Namnet på din mapp
-        val fileName = "IMG_$timeStamp.jpg"
-
-        val folder = File(context.filesDir, folderName)
-        if (!folder.exists()) {
-            folder.mkdirs() // Skapa mappen om den inte redan finns
-        }
-
-        try {
-            val file = File(folder, fileName)
-            val outputStream = FileOutputStream(file)
-            outputStream.use {
-                bild.compress(Bitmap.CompressFormat.JPEG, 100, it)
-            }
-            Log.d("BILDER", "Bilden har sparats till den interna lagringen: $fileName i mappen $folderName")
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e("BILDER", "Misslyckades med att spara bilden till den interna lagringen")
-        }
-
-    }
- */
-
-
-/*
-    fun saveImageToInternalStorage(context: Context, bild:Bitmap) {
-        val folderName = "MyImages"
-        val folder = File(context.filesDir, folderName)
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-
-        val outputStream = context.openFileOutput(bild.toString(), Context.MODE_PRIVATE)
-        bild.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        outputStream.close()
-        Log.d("BILDER", "Bilden har sparats till den interna lagringen ${bild}")
-    }
- */
-/*
-fun storeImage(image: Bitmap): Uri? {
-    var pictureFile: File = File(Environment.getExternalStorageDirectory().path + "/Folder")
-    val name = image.toString()
-    pictureFile = File(pictureFile.path + File.separator + name)
-
-    try {
-        val fos = FileOutputStream(pictureFile)
-        image.compress(Bitmap.CompressFormat.JPEG, 90, fos)
-        fos.close()
-        Log.d("BILDER","SAVED TO INTERNAL ==${pictureFile.toUri()}")
-        return pictureFile.toUri()
-    } catch (e: Exception) {
-        e.printStackTrace()
-        Log.d("BILDER","FAIL")
-        return null
-    }
-}
-
- */

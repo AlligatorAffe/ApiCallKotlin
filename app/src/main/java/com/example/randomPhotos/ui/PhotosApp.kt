@@ -27,7 +27,6 @@ fun PhotosApp() {
             val photoViewModel: PhotoViewModel = viewModel()
             HomeScreen(
                 photoUiState = photoViewModel.photoUiState,
-                contentPadding = it
             )
         }
     }
