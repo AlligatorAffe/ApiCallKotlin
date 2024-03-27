@@ -112,28 +112,6 @@ class MarsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    /*
-    fun storeImage(image: Bitmap): Uri? {
-        var pictureFile: File = File(Environment.getExternalStorageDirectory().path + "/Folder")
-        val name = image.toString()
-        pictureFile = File(pictureFile.path + File.separator + name)
-
-        try {
-            val fos = FileOutputStream(pictureFile)
-            image.compress(Bitmap.CompressFormat.JPEG, 90, fos)
-            fos.close()
-            Log.d("BILDER","SAVED TO INTERNAL ==${pictureFile.toUri()}")
-            return pictureFile.toUri()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("BILDER","FAIL")
-            return null
-        }
-    }
-
-     */
-
-
 
     fun saveImageToInternalStorage(context: Context, bild: Bitmap, i : Int) {
         val folderName = "MyImages"
@@ -143,31 +121,28 @@ class MarsViewModel(application: Application) : AndroidViewModel(application) {
         if (!folder.exists()) {
             folder.mkdirs()
         }
-        val picFile = File(context.filesDir, fileName)
-        if(picFile.exists()) {
-            Log.d("BILDER"," EXISTS")
-            return;
-        } else {
-            try {
-                val file = File(folder, fileName)
-                val outputStream = FileOutputStream(file)
-                outputStream.use {
-                    bild.compress(Bitmap.CompressFormat.JPEG, 70, it)
-                }
-                Log.d(
-                    "BILDER",
-                    "Bilden har sparats till den interna lagringen: $fileName i mappen $folderName"
-                )
-            } catch (e: IOException) {
-                e.printStackTrace()
-                Log.e("BILDER", "Misslyckades med att spara bilden till den interna lagringen")
-            }
+
+        val picFile = File(folder, fileName)
+
+        if (picFile.exists()) {
+            Log.d("BILDER", "EXISTS")
+            return
         }
 
+        try {
+            val outputStream = FileOutputStream(picFile)
+            outputStream.use {
+                bild.compress(Bitmap.CompressFormat.JPEG, 70, it)
+            }
+            Log.d(
+                "BILDER",
+                "Bilden har sparats till den interna lagringen: $fileName i mappen $folderName"
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e("BILDER", "Misslyckades med att spara bilden till den interna lagringen")
+        }
     }
-
-
-
 
     suspend fun performTask(myUrls: String): Bitmap {
         val response = MarsApi.retroFitServ.downloadImages(myUrls)
@@ -244,4 +219,24 @@ class MarsViewModel(application: Application) : AndroidViewModel(application) {
         outputStream.close()
         Log.d("BILDER", "Bilden har sparats till den interna lagringen ${bild}")
     }
+ */
+/*
+fun storeImage(image: Bitmap): Uri? {
+    var pictureFile: File = File(Environment.getExternalStorageDirectory().path + "/Folder")
+    val name = image.toString()
+    pictureFile = File(pictureFile.path + File.separator + name)
+
+    try {
+        val fos = FileOutputStream(pictureFile)
+        image.compress(Bitmap.CompressFormat.JPEG, 90, fos)
+        fos.close()
+        Log.d("BILDER","SAVED TO INTERNAL ==${pictureFile.toUri()}")
+        return pictureFile.toUri()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Log.d("BILDER","FAIL")
+        return null
+    }
+}
+
  */
