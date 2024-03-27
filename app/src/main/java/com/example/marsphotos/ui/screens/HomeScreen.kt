@@ -16,6 +16,7 @@
 package com.example.marsphotos.ui.screens
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
+import java.io.File
 
 @Composable
 fun HomeScreen(
@@ -73,32 +76,32 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ResultScreen(photos: MutableList<Bitmap>, modifier: Modifier = Modifier) {
+fun ResultScreen(photo: MutableList<Bitmap> , modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val path = "/data/data/com.example.marsphotos/files/MyImages"
+    val files = File(path).listFiles()?.toList() ?: emptyList()
     val columns = 2
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
         modifier = modifier
     ) {
 
-
-        items(photos){
-            //Text(text = " ${it}")
-            ImageComposable(it);
-            /*
-            Image(
-                bitmap = it.asImageBitmap(),
-                contentDescription = "some useful description",
-            )
-
-             */
-
+        items(files) { file ->
+            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+            bitmap?.let {
+                ImageComposable(bild = bitmap)
+            }
+        }
 
         }
     }
-}
+
+
+
 
 @Composable
 fun ImageComposable(bild: Bitmap) {
+
     Box(
         modifier = Modifier
             .size(150.dp)
