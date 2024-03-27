@@ -51,9 +51,7 @@ fun HomeScreen(
 ) {
     when (photoUiState) {
         is MarsUiState.Loading -> LoadingScreen()
-        is MarsUiState.Success -> ResultScreen(
-            photoUiState.photos, modifier = modifier.fillMaxWidth()
-        )
+        is MarsUiState.Success -> ResultScreen(modifier = modifier.fillMaxSize())
         is MarsUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
     }
 }
@@ -76,7 +74,7 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ResultScreen(photo: MutableList<Bitmap> , modifier: Modifier = Modifier) {
+fun ResultScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val path = "/data/data/com.example.marsphotos/files/MyImages"
     val files = File(path).listFiles()?.toList() ?: emptyList()

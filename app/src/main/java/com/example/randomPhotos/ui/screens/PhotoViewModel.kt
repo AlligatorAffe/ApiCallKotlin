@@ -39,7 +39,7 @@ import java.io.IOException
 
 sealed interface MarsUiState {
 
-    data class Success(val photos: MutableList<Bitmap>) : MarsUiState
+    object Success: MarsUiState
 
     object Error : MarsUiState
     object Loading : MarsUiState
@@ -63,8 +63,8 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
             photoUiState = try {
                 val listResult = async { MarsApi.retrofitService.getPhotos() }.await()
                 val imgUrls = listResult.map { it.downloadURL }
-                val imageResponseBody = async{ fetchImages(imgUrls) }.await()
-                MarsUiState.Success(imageResponseBody)
+                async{ fetchImages(imgUrls) }.await()
+                MarsUiState.Success
 
             } catch (e: IOException) {
                 MarsUiState.Error
