@@ -2,7 +2,7 @@
 
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.marsphotos.ui
+package com.example.randomPhotos.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.marsphotos.ui.screens.HomeScreen
-import com.example.marsphotos.ui.screens.PhotoViewModel
+import com.example.randomPhotos.ui.screens.HomeScreen
+import com.example.randomPhotos.ui.screens.PhotoViewModel
 
 @Composable
 fun PhotosApp() {

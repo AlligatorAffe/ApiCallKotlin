@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.marsphotos.ui.theme
+package com.example.randomPhotos.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

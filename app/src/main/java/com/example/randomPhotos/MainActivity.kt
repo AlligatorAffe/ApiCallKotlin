@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.marsphotos
+package com.example.randomPhotos
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,8 +23,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.marsphotos.ui.PhotosApp
-import com.example.marsphotos.ui.theme.MarsPhotosTheme
+import com.example.randomPhotos.ui.PhotosApp
+import com.example.randomPhotos.ui.theme.MarsPhotosTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

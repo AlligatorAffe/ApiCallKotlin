@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.marsphotos.model
+package com.example.randomPhotos.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

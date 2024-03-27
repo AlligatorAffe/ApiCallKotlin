@@ -1,3 +1,3 @@
-package com.example.marsphotos.model
+package com.example.randomPhotos.model
 
 class RandomPhotos : ArrayList<RandomPhotosItem>()

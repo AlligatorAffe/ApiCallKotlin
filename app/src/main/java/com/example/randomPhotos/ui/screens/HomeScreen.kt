@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.marsphotos.ui.screens
+package com.example.randomPhotos.ui.screens
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import com.example.marsphotos.ui.theme.MarsPhotosTheme
+import com.example.randomPhotos.ui.theme.MarsPhotosTheme
 import java.io.File
 
 @Composable

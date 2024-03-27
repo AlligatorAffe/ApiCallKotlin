@@ -1,8 +1,7 @@
 
-package com.example.marsphotos.network
+package com.example.randomPhotos.network
 
-import android.graphics.Bitmap
-import com.example.marsphotos.model.RandomPhotosItem
+import com.example.randomPhotos.model.RandomPhotosItem
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
